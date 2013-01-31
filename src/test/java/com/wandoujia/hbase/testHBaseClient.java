@@ -1,6 +1,9 @@
 package com.wandoujia.hbase;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.apache.hadoop.hbase.ClusterStatus;
@@ -28,6 +31,9 @@ public class testHBaseClient extends TestCase {
                 + clusterStatus.getDeadServerNames());
         System.out.println("hbase region servers: "
                 + clusterStatus.getServers());
+        Map<String, byte[]> values = new HashMap<String, byte[]>();
+        values.put("pn", "com.wandoujia.muce".getBytes());
+        hbaseClient.insert("applist", "co".getBytes(), "key_001", values);
     }
 
     public void testGetScanner() throws IOException {
