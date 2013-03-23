@@ -47,7 +47,7 @@ public class HBaseClient {
      * Inital hbase client with default hbase table pool size.
      */
     public HBaseClient() {
-        this(Constants.defaultPoolSize);
+        this(Constants.DEFAULT_POOL_SIZE);
     }
 
     /**
@@ -94,6 +94,21 @@ public class HBaseClient {
         return this.admin;
     }
 
+    /**
+     * create hbase table
+     * 
+     * @param tableName
+     * @param familyName
+     * @param bloomType
+     * @param compressionType
+     * @param inMemory
+     * @param blockCacheEnabled
+     * @param blockSize
+     * @param maxVersions
+     * @param splits
+     * @return
+     * @throws IOException
+     */
     public synchronized HTableDescriptor create(String tableName,
             String familyName, BloomType bloomType, Algorithm compressionType,
             Boolean inMemory, Boolean blockCacheEnabled, int blockSize,
@@ -108,14 +123,21 @@ public class HBaseClient {
         return table;
     }
 
+    /**
+     * create hbase table with default descriptor
+     * 
+     * @param tableName
+     * @return
+     * @throws IOException
+     */
     public synchronized HTableDescriptor create(String tableName)
             throws IOException {
         if (getAdmin().tableExists(tableName)) {
             return null;
         }
         HTableDescriptor table = HBaseUtil.getTableDescriptor(tableName,
-                Constants.defaultStrFamilyName, BloomType.ROW, Algorithm.NONE,
-                false, true, Constants.defaultBlockSize, 1);
+                Constants.DEFAULT_STR_FAMILY_NAME, BloomType.ROW,
+                Algorithm.NONE, false, true, Constants.DEFAULT_BLOCK_SIZE, 1);
         getAdmin().createTable(table, null);
         return table;
     }
@@ -130,11 +152,7 @@ public class HBaseClient {
             table.flushCommits();
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
@@ -158,7 +176,16 @@ public class HBaseClient {
         tablePool.closeTablePool(tableName.getBytes());
     }
 
-    public ResultScanner getScannerByPrefix(String tablename, String rowPrifix) {
+    /**
+     * get scanner by rowkey prefix
+     * 
+     * @param tablename
+     * @param rowPrifix
+     * @return
+     * @throws IOException
+     */
+    public ResultScanner getScannerByPrefix(String tablename, String rowPrifix)
+            throws IOException {
         ResultScanner rs = null;
         HTableInterface table = tablePool.getTable(tablename);
         try {
@@ -169,18 +196,14 @@ public class HBaseClient {
             e.printStackTrace();
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
         return rs;
     }
 
     /**
-     * get a single row with a single column
+     * get row with a single column
      * 
      * @param tableName
      * @param familyName
@@ -204,11 +227,7 @@ public class HBaseClient {
             return null;
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
@@ -248,11 +267,7 @@ public class HBaseClient {
             return results;
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
@@ -291,11 +306,7 @@ public class HBaseClient {
             return null;
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
@@ -327,11 +338,7 @@ public class HBaseClient {
             return table.getScanner(scan);
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
@@ -364,11 +371,7 @@ public class HBaseClient {
             return table.getScanner(scan);
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
@@ -405,11 +408,7 @@ public class HBaseClient {
             return table.getScanner(scan);
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
@@ -432,11 +431,7 @@ public class HBaseClient {
             table.put(put);
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
@@ -465,11 +460,7 @@ public class HBaseClient {
             table.delete(delete);
         } finally {
             if (table != null) {
-                try {
-                    table.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                table.close();
             }
         }
     }
